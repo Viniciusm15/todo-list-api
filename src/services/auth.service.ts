@@ -18,18 +18,19 @@ export class AuthService {
             throw new HTTPError(401, 'Credenciais inválidas');
         }
 
-        const passwordMatch = await BcryptUtil.compare(data.password, user.password);
+        const passwordMatch = await BcryptUtil.compare(data.password, user.getPassword());
 
         if (!passwordMatch) {
             throw new HTTPError(401, 'Credenciais inválidas');
         }
 
         const token = JwtUtil.generateToken({
-            userId: user.id,
-            email: user.email,
+            userId: user.getId(),
+            email: user.getEmail(),
         });
 
-        const { password, ...userWithoutPassword } = user;
+        const userJson = user.toJSON();
+        const { password, ...userWithoutPassword } = userJson;
 
         return {
             token,

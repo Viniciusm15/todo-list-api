@@ -1,9 +1,13 @@
-import { prisma } from '../database/prisma.repository';
-import { CreateTaskDTO, UpdateTaskDTO, TaskFiltersDTO } from '../dtos/task.dto';
+import { prisma } from './prisma.repository';
+import { TaskStatus } from '../enums/task-status.enum';
+import { Task } from '../models';
+
+type TaskEntity = Awaited<ReturnType<typeof prisma.task.findUnique>>;
 
 export class TaskRepository {
-    async create(userId: string, data: CreateTaskDTO) {
-        const task = await prisma.task.create({
+
+    async create(userId: string, data: { title: string; description?: string | null }): Promise<Task> {
+        const newTask = await prisma.task.create({
             data: {
                 title: data.title,
                 description: data.description,
@@ -11,10 +15,10 @@ export class TaskRepository {
             },
         });
 
-        return task;
+        return this.mapToModel(newTask);
     }
 
-    async findAll(userId: string, filters?: TaskFiltersDTO) {
+    async findAll(userId: string, filters?: { status?: TaskStatus; search?: string }): Promise<Task[]> {
         const where: any = { userId };
 
         if (filters?.status) {
@@ -33,18 +37,20 @@ export class TaskRepository {
             orderBy: { createdAt: 'desc' },
         });
 
-        return tasks;
+        return tasks.map(task => this.mapToModel(task));
     }
 
-    async findById(id: string) {
+    async findById(id: string): Promise<Task | null> {
         const task = await prisma.task.findUnique({
             where: { id },
         });
 
-        return task;
+        if (!task) return null;
+
+        return this.mapToModel(task);
     }
 
-    async findByIdAndUserId(id: string, userId: string) {
+    async findByIdAndUserId(id: string, userId: string): Promise<Task | null> {
         const task = await prisma.task.findFirst({
             where: {
                 id,
@@ -52,21 +58,37 @@ export class TaskRepository {
             },
         });
 
-        return task;
+        if (!task) return null;
+
+        return this.mapToModel(task);
     }
 
-    async update(id: string, data: UpdateTaskDTO) {
-        const task = await prisma.task.update({
+    async update(id: string, data: { title?: string; description?: string | null; status?: TaskStatus }): Promise<Task> {
+        const updatedTask = await prisma.task.update({
             where: { id },
             data,
         });
 
-        return task;
+        return this.mapToModel(updatedTask);
     }
 
-    async delete(id: string) {
-        await prisma.task.delete({
+    async delete(id: string): Promise<Task> {
+        const deletedTask = await prisma.task.delete({
             where: { id },
         });
+
+        return this.mapToModel(deletedTask);
+    }
+
+    private mapToModel(entity: NonNullable<TaskEntity>): Task {
+        return new Task(
+            entity.id,
+            entity.title,
+            entity.userId,
+            entity.status as TaskStatus,
+            entity.description,
+            entity.createdAt,
+            entity.updatedAt,
+        );
     }
 }

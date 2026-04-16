@@ -21,13 +21,23 @@ export class TaskService {
             ]);
         }
 
-        const task = await this.taskRepository.create(userId, data);
-        return task as TaskResponseDTO;
+        const task = await this.taskRepository.create(userId, {
+            title: data.title,
+            description: data.description,
+        });
+
+        return task.toJSON();
     }
 
     async findAll(userId: string, filters?: TaskFiltersDTO): Promise<TaskResponseDTO[]> {
-        const tasks = await this.taskRepository.findAll(userId, filters);
-        return tasks as TaskResponseDTO[];
+        const repoFilters = filters ? {
+            status: filters.status,
+            search: filters.search,
+        } : undefined;
+
+        const tasks = await this.taskRepository.findAll(userId, repoFilters);
+
+        return tasks.map(task => task.toJSON());
     }
 
     async findById(id: string, userId: string): Promise<TaskResponseDTO> {
@@ -44,7 +54,7 @@ export class TaskService {
             ]);
         }
 
-        return task as TaskResponseDTO;
+        return task.toJSON();
     }
 
     async update(id: string, userId: string, data: UpdateTaskDTO): Promise<TaskResponseDTO> {
@@ -72,8 +82,13 @@ export class TaskService {
             ]);
         }
 
-        const updatedTask = await this.taskRepository.update(id, data);
-        return updatedTask as TaskResponseDTO;
+        const updatedTask = await this.taskRepository.update(id, {
+            title: data.title,
+            description: data.description,
+            status: data.status,
+        });
+
+        return updatedTask.toJSON();
     }
 
     async delete(id: string, userId: string): Promise<void> {

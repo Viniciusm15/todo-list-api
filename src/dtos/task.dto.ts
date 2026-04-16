@@ -18,7 +18,3 @@ export interface TaskFiltersDTO {
     status?: TaskStatus;
     search?: string;
 }
-
-export interface FindTaskDTO {
-    taskId: string;
-}

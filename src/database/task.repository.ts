@@ -52,10 +52,7 @@ export class TaskRepository {
 
     async findByIdAndUserId(id: string, userId: string): Promise<Task | null> {
         const task = await prisma.task.findFirst({
-            where: {
-                id,
-                userId,
-            },
+            where: { id, userId },
         });
 
         if (!task) return null;
@@ -63,18 +60,24 @@ export class TaskRepository {
         return this.mapToModel(task);
     }
 
-    async update(id: string, data: { title?: string; description?: string | null; status?: TaskStatus }): Promise<Task> {
+    async update(id: string, userId: string, data: { title?: string; description?: string | null; status?: TaskStatus }): Promise<Task> {
         const updatedTask = await prisma.task.update({
-            where: { id },
+            where: {
+                id,
+                userId,
+            },
             data,
         });
 
         return this.mapToModel(updatedTask);
     }
 
-    async delete(id: string): Promise<Task> {
+    async delete(id: string, userId: string): Promise<Task> {
         const deletedTask = await prisma.task.delete({
-            where: { id },
+            where: {
+                id,
+                userId,
+            },
         });
 
         return this.mapToModel(deletedTask);

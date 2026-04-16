@@ -30,10 +30,9 @@ export class TaskService {
     }
 
     async findAll(userId: string, filters?: TaskFiltersDTO): Promise<TaskResponseDTO[]> {
-        const repoFilters = filters ? {
-            status: filters.status,
-            search: filters.search,
-        } : undefined;
+        const repoFilters = filters
+            ? { status: filters.status, search: filters.search }
+            : undefined;
 
         const tasks = await this.taskRepository.findAll(userId, repoFilters);
 
@@ -82,7 +81,7 @@ export class TaskService {
             ]);
         }
 
-        const updatedTask = await this.taskRepository.update(id, {
+        const updatedTask = await this.taskRepository.update(id, userId, {
             title: data.title,
             description: data.description,
             status: data.status,
@@ -105,6 +104,6 @@ export class TaskService {
             ]);
         }
 
-        await this.taskRepository.delete(id);
+        await this.taskRepository.delete(id, userId);
     }
 }

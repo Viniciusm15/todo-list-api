@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { TaskService } from '../services/task.service';
 import { AuthRequest } from '../middlewares/auth-middleware';
 import { CreateTaskDTO, UpdateTaskDTO, TaskFiltersDTO } from '../dtos/task.dto';
-import { TaskStatus } from "../enums/task-status.enum";
+import { TaskStatus } from '../enums/task-status.enum';
 import { onError } from '../utils';
 
 export class TaskController {

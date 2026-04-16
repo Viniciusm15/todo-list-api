@@ -178,6 +178,10 @@ export const swaggerOptions = {
                             description: 'Email já cadastrado',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
+                        500: {
+                            description: 'Erro interno do servidor',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
             },
@@ -212,6 +216,10 @@ export const swaggerOptions = {
                         },
                         401: {
                             description: 'Credenciais inválidas',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        500: {
+                            description: 'Erro interno do servidor',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
                     },
@@ -260,6 +268,10 @@ export const swaggerOptions = {
                             description: 'Não autenticado',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
+                        500: {
+                            description: 'Erro interno do servidor',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
                 post: {
@@ -296,6 +308,10 @@ export const swaggerOptions = {
                         },
                         401: {
                             description: 'Não autenticado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        500: {
+                            description: 'Erro interno do servidor',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
                     },
@@ -337,6 +353,10 @@ export const swaggerOptions = {
                         },
                         404: {
                             description: 'Tarefa não encontrada',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        500: {
+                            description: 'Erro interno do servidor',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
                     },
@@ -390,6 +410,10 @@ export const swaggerOptions = {
                             description: 'Tarefa não encontrada',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
+                        500: {
+                            description: 'Erro interno do servidor',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
                 delete: {
@@ -426,6 +450,10 @@ export const swaggerOptions = {
                         },
                         404: {
                             description: 'Tarefa não encontrada',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        500: {
+                            description: 'Erro interno do servidor',
                             content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
                         },
                     },

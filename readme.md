@@ -1,143 +1,316 @@
-# API Node.js Template
+# 📝 API To-Do List com Autenticação JWT
 
-Este é um template para criar APIs RESTful em Node.js utilizando Express, TypeScript, Prisma ORM e PostgreSQL. O projeto está configurado para rodar em containers Docker com autoreload para desenvolvimento.
+API REST para gerenciamento de tarefas com cadastro e autenticação de usuários. Cada usuário gerencia exclusivamente suas próprias tarefas, com segurança garantida por JWT e senhas protegidas com bcrypt.
 
-## Descrição
+---
 
-O template inclui uma estrutura básica para uma API Node.js com:
-- **Express**: Framework web para Node.js.
-- **TypeScript**: Superset do JavaScript com tipagem estática.
-- **Prisma**: ORM para interação com o banco de dados PostgreSQL.
-- **Docker**: Containerização para facilitar o desenvolvimento e deploy.
-- **Autoload**: Recarregamento automático do servidor durante o desenvolvimento.
+## 🚀 Tecnologias utilizadas
 
-## Pré-requisitos
+| Tecnologia | Descrição |
+|---|---|
+| Node.js + TypeScript | Runtime e linguagem |
+| Express | Framework HTTP |
+| Prisma ORM | Acesso ao banco de dados |
+| PostgreSQL | Banco de dados relacional |
+| JWT (jsonwebtoken) | Autenticação e autorização |
+| bcryptjs | Hash de senhas |
+| express-validator | Validação de dados de entrada |
+| Swagger (swagger-ui-express) | Documentação interativa da API |
+| Docker + Docker Compose | Containerização |
 
-Antes de começar, certifique-se de ter instalado:
-- [Node.js](https://nodejs.org/) (versão 18 ou superior)
-- [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/)
-- [Git](https://git-scm.com/)
+---
 
-## Como Usar Este Template
+## 🏗️ Arquitetura e Design Patterns
 
-Este repositório é um template no GitHub. Para usá-lo:
-
-1. Clique no botão **"Use this template"** no topo da página do repositório no GitHub.
-2. Escolha um nome para o seu novo repositório e clique em **"Create repository from template"**.
-3. Clone o repositório criado para sua máquina local:
-   ```bash
-   git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
-   cd SEU_REPOSITORIO
-   ```
-
-4. Configure as variáveis de ambiente (veja a seção de configuração abaixo).
-
-## Configuração
-
-1. Crie um arquivo `.env` na raiz do projeto com base no arquivo `.env-example`:
-   ```env
-   PORT=3030
-   POSTGRES_USER=seu_usuario
-   POSTGRES_PASSWORD=sua_senha
-   POSTGRES_DB=seu_banco
-   DATABASE_URL="postgresql://seu_usuario:sua_senha@localhost:5432/seu_banco?schema=public"
-   ```
-
-2. Ajuste as configurações no `prisma/schema.prisma` conforme necessário para o seu banco de dados.
-
-## Instalação e Execução
-
-### Com Docker (Recomendado)
-
-1. Certifique-se de que o Docker e Docker Compose estão instalados e rodando.
-
-2. Execute o comando para construir e iniciar os containers:
-   ```bash
-   docker compose up --build
-   ```
-
-3. A API estará disponível em `http://localhost:3030`.
-
-4. O Prisma Studio (interface gráfica para o banco) estará disponível em `http://localhost:5555`.
-
-5. Para parar os containers:
-   ```bash
-   docker compose down
-   ```
-
-**Nota**: Com Docker, o autoreload está ativado. Qualquer mudança nos arquivos será automaticamente refletida no container.
-
-### Sem Docker (Desenvolvimento Local)
-
-1. Instale as dependências:
-   ```bash
-   npm install
-   ```
-
-2. Configure o banco de dados PostgreSQL localmente ou use um serviço como ElephantSQL.
-
-3. Execute as migrações do Prisma:
-   ```bash
-   npx prisma migrate dev
-   ```
-
-4. Gere o cliente Prisma:
-   ```bash
-   npx prisma generate
-   ```
-
-5. Inicie o servidor em modo de desenvolvimento:
-   ```bash
-   npm run dev
-   ```
-
-6. A API estará disponível em `http://localhost:3030`.
-
-## Estrutura do Projeto
+O projeto segue uma arquitetura em camadas com separação clara de responsabilidades:
 
 ```
-├── src/
-│   ├── controllers/     # Controladores da API
-│   ├── database/        # Configurações do banco de dados
-│   ├── dtos/            # Data Transfer Objects
-│   ├── envs/            # Configurações de ambiente
-│   ├── middlewares/     # Middlewares personalizados
-│   ├── models/          # Modelos de dados
-│   ├── routes/          # Definições de rotas
-│   ├── services/        # Lógica de negócio
-│   ├── utils/           # Utilitários
-│   ├── app.ts           # Configuração do Express
-│   └── server.ts        # Ponto de entrada da aplicação
-├── prisma/
-│   ├── schema.prisma    # Esquema do banco de dados
-│   └── migrations/      # Migrações do Prisma
-├── Dockerfile           # Configuração do container da aplicação
-├── docker-compose.yml   # Configuração dos serviços Docker
-├── package.json         # Dependências e scripts
-├── tsconfig.json        # Configuração do TypeScript
-└── readme.md            # Este arquivo
+src/
+ ┣ config/          # Configurações (Swagger)
+ ┣ controllers/     # Recebem requisições, delegam para services
+ ┣ database/        # Repository Pattern — acesso ao banco via Prisma
+ ┣ docs/            # Definições Swagger
+ ┣ dtos/            # Data Transfer Objects — contratos de entrada/saída
+ ┣ enums/           # Enumerações (ex: TaskStatus)
+ ┣ envs/            # Carregamento e validação de variáveis de ambiente
+ ┣ middlewares/     # Auth JWT, validação de dados
+ ┣ models/          # Entidades de domínio (User, Task)
+ ┣ routes/          # Definição das rotas Express
+ ┣ services/        # Service Layer — regras de negócio
+ ┣ utils/           # Utilitários (bcrypt, jwt, error handling)
+ ┣ app.ts           # Configuração do Express
+ ┗ server.ts        # Inicialização do servidor
 ```
 
-## Scripts Disponíveis
+**Patterns utilizados:**
+- **Repository Pattern** — `UserRepository` e `TaskRepository` abstraem o acesso ao Prisma
+- **Service Layer** — regras de negócio isoladas dos controllers
+- **Middleware Pattern** — autenticação JWT e validação de entrada como middlewares reutilizáveis
 
-- `npm run dev`: Inicia o servidor em modo de desenvolvimento com autoreload.
-- `npm run build`: Compila o TypeScript para JavaScript.
-- `npm run start`: Inicia o servidor em produção (após build).
+---
 
-## Tecnologias Utilizadas
+## ⚙️ Variáveis de ambiente
 
-- **Node.js**: Runtime JavaScript.
-- **Express**: Framework web.
-- **TypeScript**: Linguagem de programação.
-- **Prisma**: ORM para banco de dados.
-- **PostgreSQL**: Banco de dados relacional.
-- **Docker**: Containerização.
-- **ts-node-dev**: Ferramenta para desenvolvimento com TypeScript e autoreload.
+Crie um arquivo `.env` na raiz do projeto com base no `.env.example`:
 
-## Contribuição
+```env
+# Porta da aplicação
+PORT=3030
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
+# Banco de dados (Docker)
+DATABASE_URL="postgresql://admin:senha123@db:5432/meu_banco?schema=public"
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=senha123
+POSTGRES_DB=meu_banco
 
-## Licença
+# JWT
+JWT_SECRET=sua_chave_secreta_aqui
+JWT_EXPIRES_IN=24h
+```
 
-Este projeto está sob a licença ISC.
+> ⚠️ **Nunca** commite o arquivo `.env` real. Use `.env.example` como referência.
+
+---
+
+## 🐳 Instalação e execução
+
+### Com Docker (recomendado)
+
+Pré-requisitos: [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/)
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/Viniciusm15/todo-list-api.git
+cd todo-list-api
+
+# 2. Copie o arquivo de variáveis de ambiente
+cp .env.example .env
+
+# 3. Suba os containers (API + banco de dados)
+docker compose up --build
+```
+
+A API estará disponível em `http://localhost:3030`.
+
+---
+
+### Sem Docker (local)
+
+Pré-requisitos: Node.js 18+, PostgreSQL rodando localmente
+
+```bash
+# 1. Clone o repositório
+git clone <url-do-repositorio>
+cd <nome-do-projeto>
+
+# 2. Instale as dependências
+npm install
+
+# 3. Configure o .env com a URL do banco local
+# DATABASE_URL="postgresql://localhost:5432/meu_banco?schema=public"
+
+# 4. Execute as migrations
+npx prisma migrate dev
+
+# 5. Inicie o servidor
+npm run dev
+```
+
+---
+
+## 📚 Documentação interativa (Swagger)
+
+Com a aplicação rodando, acesse:
+
+```
+http://localhost:3030
+```
+
+Todas as rotas estão documentadas com exemplos de request, response e esquemas de erro.
+
+---
+
+## 🔐 Autenticação
+
+A API utiliza **JWT Bearer Token**. O fluxo é:
+
+1. Cadastre um usuário via `POST /users`
+2. Faça login via `POST /auth/login` — você receberá um `token`
+3. Inclua o token no header de todas as requisições de tarefas:
+
+```
+Authorization: Bearer <seu_token>
+```
+
+O token expira em **24 horas**.
+
+---
+
+## 📋 Rotas da API
+
+### Usuários
+
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| POST | `/users` | Cadastrar novo usuário | ❌ |
+
+**Exemplo de requisição:**
+```json
+POST /users
+{
+  "name": "Maria Silva",
+  "email": "maria@email.com",
+  "password": "123456"
+}
+```
+
+**Resposta (201):**
+```json
+{
+  "success": true,
+  "message": "Usuário criado com sucesso",
+  "data": {
+    "id": "clxyz123",
+    "name": "Maria Silva",
+    "email": "maria@email.com",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+---
+
+### Autenticação
+
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| POST | `/auth/login` | Realizar login | ❌ |
+
+**Exemplo de requisição:**
+```json
+POST /auth/login
+{
+  "email": "maria@email.com",
+  "password": "123456"
+}
+```
+
+**Resposta (200):**
+```json
+{
+  "success": true,
+  "message": "Login realizado com sucesso",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "clxyz123",
+      "name": "Maria Silva",
+      "email": "maria@email.com"
+    }
+  }
+}
+```
+
+---
+
+### Tarefas
+
+> ⚠️ Todas as rotas abaixo exigem o header `Authorization: Bearer <token>`
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/tasks` | Criar nova tarefa |
+| GET | `/tasks` | Listar tarefas do usuário autenticado |
+| GET | `/tasks/:id` | Buscar tarefa por ID |
+| PUT | `/tasks/:id` | Atualizar tarefa |
+| DELETE | `/tasks/:id` | Remover tarefa |
+
+**Criar tarefa — `POST /tasks`:**
+```json
+{
+  "title": "Estudar TypeScript",
+  "description": "Revisar tipos e interfaces"
+}
+```
+
+**Listar tarefas com filtros — `GET /tasks`:**
+
+Parâmetros de query opcionais:
+- `status` — filtra por status: `PENDENTE`, `EM_ANDAMENTO`, `CONCLUIDA`
+- `search` — busca por título ou descrição (case-insensitive)
+
+```
+GET /tasks?status=PENDENTE&search=typescript
+```
+
+**Atualizar tarefa — `PUT /tasks/:id`:**
+```json
+{
+  "title": "Estudar TypeScript Avançado",
+  "status": "EM_ANDAMENTO"
+}
+```
+
+**Resposta padrão de tarefa:**
+```json
+{
+  "success": true,
+  "message": "Tarefa encontrada com sucesso",
+  "data": {
+    "id": "clxyz456",
+    "title": "Estudar TypeScript",
+    "description": "Revisar tipos e interfaces",
+    "status": "PENDENTE",
+    "userId": "clxyz123",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+---
+
+## ❌ Respostas de erro
+
+Todos os erros seguem o mesmo formato:
+
+```json
+{
+  "success": false,
+  "message": "Descrição do erro",
+  "details": [
+    {
+      "type": "required",
+      "field": "title",
+      "description": "O título da tarefa é obrigatório",
+      "location": "body"
+    }
+  ]
+}
+```
+
+| Código | Situação |
+|---|---|
+| 400 | Dados de entrada inválidos |
+| 401 | Não autenticado ou token inválido/expirado |
+| 404 | Recurso não encontrado (ou não pertence ao usuário) |
+| 409 | Conflito (ex: email já cadastrado) |
+
+---
+
+## 🔒 Regras de autorização
+
+- Um usuário autenticado **não pode acessar, editar ou excluir tarefas de outro usuário**
+- A verificação é feita combinando `id` da tarefa com `userId` do token em todas as operações
+- Tentativas de acesso a tarefas de outro usuário retornam `404` (não revela a existência do recurso)
+
+---
+
+## 🔑 Status de tarefas
+
+| Valor | Descrição |
+|---|---|
+| `PENDENTE` | Tarefa ainda não iniciada (padrão) |
+| `EM_ANDAMENTO` | Tarefa em progresso |
+| `CONCLUIDA` | Tarefa finalizada |

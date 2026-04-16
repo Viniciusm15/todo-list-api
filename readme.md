@@ -88,9 +88,17 @@ cp .env.example .env
 
 # 3. Suba os containers (API + banco de dados)
 docker compose up --build
+
+# 4. Em outro terminal, execute as migrations
+docker compose exec app npx prisma migrate dev
+
+# 5. (Opcional) Em outro terminal, abra o Prisma Studio para visualizar o banco 
+docker compose exec app npx prisma studio
 ```
 
 A API estará disponível em `http://localhost:3030`.
+
+O Prisma Studio (interface gráfica do banco de dados) pode ser acessado em `http://localhost:5555`
 
 ---
 

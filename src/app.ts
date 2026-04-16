@@ -40,7 +40,7 @@ class App {
     this.app.listen(this.port, () => {
       // eslint-disable-next-line no-console
       console.log(`App listening on the port ${this.port}`);
-      console.log(`📚 Swagger UI available at http://localhost:${this.port}/`);
+      console.log(`Swagger UI available at http://localhost:${this.port}/`);
     });
   }
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { LoginDTO } from '../dtos/login.dto';
 import { onError } from '../utils';
 
 export class AuthController {
@@ -9,27 +10,26 @@ export class AuthController {
         this.authService = new AuthService();
     }
 
-    async login(req: Request, res: Response): Promise<void> {
+    async login(req: Request, res: Response): Promise<Response> {
         try {
-            const { email, password } = req.body;
+            const loginData: LoginDTO = req.body;
 
-            if (!email || !password) {
-                res.status(400).json({
+            if (!loginData.email || !loginData.password) {
+                return res.status(400).json({
                     success: false,
                     message: 'Email e senha são obrigatórios',
                 });
-                return;
             }
 
-            const result = await this.authService.login({ email, password });
+            const result = await this.authService.login(loginData);
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: 'Login realizado com sucesso',
                 data: result,
             });
         } catch (error) {
-            onError(error, res);
+            return onError(error, res);
         }
     }
 }

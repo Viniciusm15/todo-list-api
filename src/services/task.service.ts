@@ -1,5 +1,5 @@
 import { TaskRepository } from '../database/task.repository';
-import { CreateTaskDTO, UpdateTaskDTO, TaskResponseDTO, TaskFiltersDTO } from '../dtos/task-dto';
+import { CreateTaskDTO, UpdateTaskDTO, TaskResponseDTO, TaskFiltersDTO } from '../dtos/task.dto';
 import { HTTPError } from '../utils/http.error';
 
 export class TaskService {

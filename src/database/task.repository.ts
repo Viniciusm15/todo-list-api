@@ -1,5 +1,5 @@
 import { prisma } from '../database/prisma.repository';
-import { CreateTaskDTO, UpdateTaskDTO, TaskFiltersDTO } from '../dtos/task-dto';
+import { CreateTaskDTO, UpdateTaskDTO, TaskFiltersDTO } from '../dtos/task.dto';
 
 export class TaskRepository {
     async create(userId: string, data: CreateTaskDTO) {

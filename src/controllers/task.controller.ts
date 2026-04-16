@@ -1,7 +1,8 @@
 import { Response } from 'express';
 import { TaskService } from '../services/task.service';
 import { AuthRequest } from '../middlewares/auth-middleware';
-import { TaskStatus } from '../enums/task-status.enum';
+import { CreateTaskDTO, UpdateTaskDTO, TaskFiltersDTO } from '../dtos/task.dto';
+import { TaskStatus } from "../enums/task-status.enum";
 import { onError } from '../utils';
 
 export class TaskController {
@@ -13,10 +14,10 @@ export class TaskController {
 
     async create(req: AuthRequest, res: Response): Promise<Response> {
         try {
-            const { title, description } = req.body;
+            const taskData: CreateTaskDTO = req.body;
             const userId = req.userId!;
 
-            const task = await this.taskService.create(userId, { title, description });
+            const task = await this.taskService.create(userId, taskData);
 
             return res.status(201).json({
                 success: true,
@@ -33,7 +34,7 @@ export class TaskController {
             const userId = req.userId!;
             const { status, search } = req.query;
 
-            const filters: any = {};
+            const filters: TaskFiltersDTO = {};
 
             if (status && Object.values(TaskStatus).includes(status as TaskStatus)) {
                 filters.status = status as TaskStatus;
@@ -75,21 +76,17 @@ export class TaskController {
     async update(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const id = req.params.id as string;
-            const { title, description, status } = req.body;
+            const updateData: UpdateTaskDTO = req.body;
             const userId = req.userId!;
 
-            if (status && !Object.values(TaskStatus).includes(status)) {
+            if (updateData.status && !Object.values(TaskStatus).includes(updateData.status)) {
                 return res.status(400).json({
                     success: false,
                     message: 'Status inválido',
                 });
             }
 
-            const task = await this.taskService.update(id, userId, {
-                title,
-                description,
-                status,
-            });
+            const task = await this.taskService.update(id, userId, updateData);
 
             return res.status(200).json({
                 success: true,

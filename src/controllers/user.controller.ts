@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
+import { onError } from '../utils';
 
 export class UserController {
     private userService: UserService;
@@ -8,28 +9,26 @@ export class UserController {
         this.userService = new UserService();
     }
 
-    async create(req: Request, res: Response): Promise<void> {
+    async create(req: Request, res: Response): Promise<Response> {
         try {
             const { name, email, password } = req.body;
 
             if (!name || !email || !password) {
-                res.status(400).json({ error: 'Todos os campos são obrigatórios' });
-                return;
+                return res.status(400).json({
+                    success: false,
+                    message: 'Todos os campos são obrigatórios',
+                });
             }
 
             const user = await this.userService.create({ name, email, password });
 
-            res.status(201).json(user);
+            return res.status(201).json({
+                success: true,
+                message: 'Usuário criado com sucesso',
+                data: user,
+            });
         } catch (error) {
-            if (error instanceof Error) {
-                if (error.message === 'Email já cadastrado') {
-                    res.status(409).json({ error: error.message });
-                } else {
-                    res.status(400).json({ error: error.message });
-                }
-            } else {
-                res.status(500).json({ error: 'Erro interno do servidor' });
-            }
+            return onError(error, res);
         }
     }
 }

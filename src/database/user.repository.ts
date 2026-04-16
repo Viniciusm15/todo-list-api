@@ -1,5 +1,5 @@
 import { prisma } from './prisma.repository';
-import { CreateUserDTO } from '../dtos/create-user.dto';
+import { CreateUserDTO } from '../dtos/user.dto';
 
 export class UserRepository {
     async create(data: CreateUserDTO) {

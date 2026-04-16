@@ -1,3 +1,5 @@
+import { UserDto } from "../models";
+
 export interface LoginDTO {
     email: string;
     password: string;
@@ -5,9 +7,5 @@ export interface LoginDTO {
 
 export interface LoginResponseDTO {
     token: string;
-    user: {
-        id: string;
-        name: string;
-        email: string;
-    };
+    user: Omit<UserDto, "password">;
 }

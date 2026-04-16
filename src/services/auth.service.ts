@@ -2,6 +2,7 @@ import { UserRepository } from '../database/user.repository';
 import { LoginDTO, LoginResponseDTO } from '../dtos/login.dto';
 import { BcryptUtil } from '../utils/bcrypt';
 import { JwtUtil } from '../utils/jwt';
+import { HTTPError } from '../utils/http.error';
 
 export class AuthService {
     private userRepository: UserRepository;
@@ -14,13 +15,13 @@ export class AuthService {
         const user = await this.userRepository.findByEmail(data.email);
 
         if (!user) {
-            throw new Error('Credenciais inválidas');
+            throw new HTTPError(401, 'Credenciais inválidas');
         }
 
         const passwordMatch = await BcryptUtil.compare(data.password, user.password);
 
         if (!passwordMatch) {
-            throw new Error('Credenciais inválidas');
+            throw new HTTPError(401, 'Credenciais inválidas');
         }
 
         const token = JwtUtil.generateToken({
@@ -28,13 +29,11 @@ export class AuthService {
             email: user.email,
         });
 
+        const { password, ...userWithoutPassword } = user;
+
         return {
             token,
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-            },
+            user: userWithoutPassword,
         };
     }
 }

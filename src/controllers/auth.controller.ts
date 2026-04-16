@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { onError } from '../utils';
 
 export class AuthController {
     private authService: AuthService;
@@ -13,23 +14,22 @@ export class AuthController {
             const { email, password } = req.body;
 
             if (!email || !password) {
-                res.status(400).json({ error: 'Email e senha são obrigatórios' });
+                res.status(400).json({
+                    success: false,
+                    message: 'Email e senha são obrigatórios',
+                });
                 return;
             }
 
             const result = await this.authService.login({ email, password });
 
-            res.json(result);
+            res.status(200).json({
+                success: true,
+                message: 'Login realizado com sucesso',
+                data: result,
+            });
         } catch (error) {
-            if (error instanceof Error) {
-                if (error.message === 'Credenciais inválidas') {
-                    res.status(401).json({ error: error.message });
-                } else {
-                    res.status(400).json({ error: error.message });
-                }
-            } else {
-                res.status(500).json({ error: 'Erro interno do servidor' });
-            }
+            onError(error, res);
         }
     }
 }

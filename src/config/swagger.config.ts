@@ -36,11 +36,11 @@ export const swaggerOptions = {
                 UserResponseDTO: {
                     type: 'object',
                     properties: {
-                        id: { type: 'string' },
-                        name: { type: 'string' },
-                        email: { type: 'string' },
-                        createdAt: { type: 'string', format: 'date-time' },
-                        updatedAt: { type: 'string', format: 'date-time' },
+                        id: { type: 'string', example: 'cl123456' },
+                        name: { type: 'string', example: 'João Silva' },
+                        email: { type: 'string', format: 'email', example: 'joao@email.com' },
+                        createdAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' },
+                        updatedAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' },
                     },
                 },
                 // Auth schemas
@@ -55,13 +55,15 @@ export const swaggerOptions = {
                 LoginResponseDTO: {
                     type: 'object',
                     properties: {
-                        token: { type: 'string' },
+                        token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
                         user: {
                             type: 'object',
                             properties: {
-                                id: { type: 'string' },
-                                name: { type: 'string' },
-                                email: { type: 'string' },
+                                id: { type: 'string', example: 'cl123456' },
+                                name: { type: 'string', example: 'João Silva' },
+                                email: { type: 'string', format: 'email', example: 'joao@email.com' },
+                                createdAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' },
+                                updatedAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' },
                             },
                         },
                     },
@@ -78,8 +80,8 @@ export const swaggerOptions = {
                 UpdateTaskDTO: {
                     type: 'object',
                     properties: {
-                        title: { type: 'string', example: 'Estudar TypeScript' },
-                        description: { type: 'string', example: 'Revisar conceitos avançados' },
+                        title: { type: 'string', example: 'Estudar TypeScript Avançado' },
+                        description: { type: 'string', example: 'Revisar conceitos avançados de TypeScript' },
                         status: {
                             type: 'string',
                             enum: ['PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDA'],
@@ -90,19 +92,45 @@ export const swaggerOptions = {
                 TaskResponseDTO: {
                     type: 'object',
                     properties: {
-                        id: { type: 'string' },
-                        title: { type: 'string' },
-                        description: { type: 'string' },
-                        status: { type: 'string', enum: ['PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDA'] },
-                        userId: { type: 'string' },
-                        createdAt: { type: 'string', format: 'date-time' },
-                        updatedAt: { type: 'string', format: 'date-time' },
+                        id: { type: 'string', example: 'cl123456' },
+                        title: { type: 'string', example: 'Estudar TypeScript' },
+                        description: { type: 'string', example: 'Revisar conceitos de types e interfaces' },
+                        status: {
+                            type: 'string',
+                            enum: ['PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDA'],
+                            example: 'PENDENTE',
+                        },
+                        userId: { type: 'string', example: 'cl123456' },
+                        createdAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' },
+                        updatedAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' },
+                    },
+                },
+                // Standard Response (padrão dos controllers)
+                StandardResponse: {
+                    type: 'object',
+                    properties: {
+                        success: { type: 'boolean', example: true },
+                        message: { type: 'string', example: 'Operação realizada com sucesso' },
+                        data: { type: 'object' },
                     },
                 },
                 ErrorResponse: {
                     type: 'object',
                     properties: {
-                        error: { type: 'string' },
+                        success: { type: 'boolean', example: false },
+                        message: { type: 'string', example: 'Mensagem de erro' },
+                        details: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    type: { type: 'string' },
+                                    field: { type: 'string' },
+                                    description: { type: 'string' },
+                                    location: { type: 'string' },
+                                },
+                            },
+                        },
                     },
                 },
             },
@@ -131,12 +159,25 @@ export const swaggerOptions = {
                             description: 'Usuário criado com sucesso',
                             content: {
                                 'application/json': {
-                                    schema: { $ref: '#/components/schemas/UserResponseDTO' },
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Usuário criado com sucesso' },
+                                            data: { $ref: '#/components/schemas/UserResponseDTO' },
+                                        },
+                                    },
                                 },
                             },
                         },
-                        400: { description: 'Dados inválidos', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
-                        409: { description: 'Email já cadastrado', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        400: {
+                            description: 'Dados inválidos',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        409: {
+                            description: 'Email já cadastrado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
             },
@@ -158,11 +199,21 @@ export const swaggerOptions = {
                             description: 'Login realizado com sucesso',
                             content: {
                                 'application/json': {
-                                    schema: { $ref: '#/components/schemas/LoginResponseDTO' },
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Login realizado com sucesso' },
+                                            data: { $ref: '#/components/schemas/LoginResponseDTO' },
+                                        },
+                                    },
                                 },
                             },
                         },
-                        401: { description: 'Credenciais inválidas', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        401: {
+                            description: 'Credenciais inválidas',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
             },
@@ -192,13 +243,23 @@ export const swaggerOptions = {
                             content: {
                                 'application/json': {
                                     schema: {
-                                        type: 'array',
-                                        items: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Tarefas listadas com sucesso' },
+                                            data: {
+                                                type: 'array',
+                                                items: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                            },
+                                        },
                                     },
                                 },
                             },
                         },
-                        401: { description: 'Não autenticado', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        401: {
+                            description: 'Não autenticado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
                 post: {
@@ -218,12 +279,25 @@ export const swaggerOptions = {
                             description: 'Tarefa criada com sucesso',
                             content: {
                                 'application/json': {
-                                    schema: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Tarefa criada com sucesso' },
+                                            data: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                        },
+                                    },
                                 },
                             },
                         },
-                        400: { description: 'Dados inválidos', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
-                        401: { description: 'Não autenticado', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        400: {
+                            description: 'Dados inválidos',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        401: {
+                            description: 'Não autenticado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
             },
@@ -246,12 +320,25 @@ export const swaggerOptions = {
                             description: 'Tarefa encontrada',
                             content: {
                                 'application/json': {
-                                    schema: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Tarefa encontrada com sucesso' },
+                                            data: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                        },
+                                    },
                                 },
                             },
                         },
-                        401: { description: 'Não autenticado', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
-                        404: { description: 'Tarefa não encontrada', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        401: {
+                            description: 'Não autenticado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        404: {
+                            description: 'Tarefa não encontrada',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
                 put: {
@@ -280,13 +367,29 @@ export const swaggerOptions = {
                             description: 'Tarefa atualizada com sucesso',
                             content: {
                                 'application/json': {
-                                    schema: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Tarefa atualizada com sucesso' },
+                                            data: { $ref: '#/components/schemas/TaskResponseDTO' },
+                                        },
+                                    },
                                 },
                             },
                         },
-                        400: { description: 'Dados inválidos', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
-                        401: { description: 'Não autenticado', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
-                        404: { description: 'Tarefa não encontrada', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        400: {
+                            description: 'Dados inválidos',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        401: {
+                            description: 'Não autenticado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        404: {
+                            description: 'Tarefa não encontrada',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
                 delete: {
@@ -303,9 +406,28 @@ export const swaggerOptions = {
                         },
                     ],
                     responses: {
-                        204: { description: 'Tarefa removida com sucesso' },
-                        401: { description: 'Não autenticado', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
-                        404: { description: 'Tarefa não encontrada', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } } },
+                        200: {
+                            description: 'Tarefa removida com sucesso',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'object',
+                                        properties: {
+                                            success: { type: 'boolean', example: true },
+                                            message: { type: 'string', example: 'Tarefa removida com sucesso' },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        401: {
+                            description: 'Não autenticado',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
+                        404: {
+                            description: 'Tarefa não encontrada',
+                            content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' } } },
+                        },
                     },
                 },
             },

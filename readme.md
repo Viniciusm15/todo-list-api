@@ -324,3 +324,106 @@ Todos os erros seguem o mesmo formato:
 | `PENDENTE` | Tarefa ainda não iniciada (padrão) |
 | `EM_ANDAMENTO` | Tarefa em progresso |
 | `CONCLUIDA` | Tarefa finalizada |
+
+## 🧪 Testando a API pelo Swagger
+ 
+Com a aplicação rodando, acesse `http://localhost:3030` para abrir a documentação interativa.
+ 
+---
+ 
+### 1. Criar usuário — `POST /users`
+ 
+1. Clique na rota **POST /users** e depois em **Try it out**
+2. No campo *Request body*, preencha:
+```json
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "123456"
+}
+```
+3. Clique em **Execute**
+4. Resposta esperada: **201** com os dados do usuário criado
+---
+ 
+### 2. Fazer login — `POST /auth/login`
+ 
+1. Clique na rota **POST /auth/login** e depois em **Try it out**
+2. No campo *Request body*, preencha com o email e senha cadastrados:
+```json
+{
+  "email": "joao@email.com",
+  "password": "123456"
+}
+```
+3. Clique em **Execute**
+4. Resposta esperada: **200** com o campo `token` no corpo da resposta
+5. **Copie o valor do `token`** — ele será necessário para todas as rotas de tarefas
+---
+ 
+### 3. Autenticar no Swagger
+ 
+1. Clique no botão **Authorize 🔒** no topo da página
+2. No campo *Value*, cole o token no formato:
+```
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+3. Clique em **Authorize** e depois em **Close**
+A partir daqui, todas as requisições às rotas de tarefas serão enviadas com o token automaticamente.
+ 
+---
+ 
+### 4. Criar tarefa — `POST /tasks`
+ 
+1. Clique na rota **POST /tasks** e depois em **Try it out**
+2. No campo *Request body*, preencha:
+```json
+{
+  "title": "Estudar TypeScript",
+  "description": "Revisar conceitos de types e interfaces"
+}
+```
+3. Clique em **Execute**
+4. Resposta esperada: **201** com os dados da tarefa criada
+5. **Anote o `id`** retornado — será usado nas próximas etapas
+---
+ 
+### 5. Listar tarefas — `GET /tasks`
+ 
+1. Clique na rota **GET /tasks** e depois em **Try it out**
+2. Os parâmetros de filtro são opcionais:
+   - `status`: `PENDENTE`, `EM_ANDAMENTO` ou `CONCLUIDA`
+   - `search`: texto para buscar no título ou descrição
+3. Clique em **Execute**
+4. Resposta esperada: **200** com a lista de tarefas do usuário autenticado
+---
+ 
+### 6. Buscar tarefa por ID — `GET /tasks/{id}`
+ 
+1. Clique na rota **GET /tasks/{id}** e depois em **Try it out**
+2. Informe o `id` da tarefa criada no passo 4
+3. Clique em **Execute**
+4. Resposta esperada: **200** com os dados da tarefa
+---
+ 
+### 7. Atualizar tarefa — `PUT /tasks/{id}`
+ 
+1. Clique na rota **PUT /tasks/{id}** e depois em **Try it out**
+2. Informe o `id` da tarefa e preencha o *Request body* com os campos que deseja alterar:
+```json
+{
+  "title": "Estudar TypeScript Avançado",
+  "status": "EM_ANDAMENTO"
+}
+```
+3. Clique em **Execute**
+4. Resposta esperada: **200** com os dados atualizados
+---
+ 
+### 8. Remover tarefa — `DELETE /tasks/{id}`
+ 
+1. Clique na rota **DELETE /tasks/{id}** e depois em **Try it out**
+2. Informe o `id` da tarefa
+3. Clique em **Execute**
+4. Resposta esperada: **200** confirmando a remoção
+

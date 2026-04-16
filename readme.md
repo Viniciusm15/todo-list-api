@@ -108,14 +108,16 @@ Pré-requisitos: Node.js 18+, PostgreSQL rodando localmente
 
 ```bash
 # 1. Clone o repositório
-git clone <url-do-repositorio>
-cd <nome-do-projeto>
+git clone https://github.com/Viniciusm15/todo-list-api.git
+cd todo-list-api
 
-# 2. Instale as dependências
-npm install
-
-# 3. Configure o .env com a URL do banco local
+# 2. Copie o arquivo de variáveis de ambiente
+cp .env.example .env
+# Edite o .env e ajuste a DATABASE_URL para apontar para o seu PostgreSQL local:
 # DATABASE_URL="postgresql://localhost:5432/meu_banco?schema=public"
+
+# 3. Instale as dependências
+npm install
 
 # 4. Execute as migrations
 npx prisma migrate dev

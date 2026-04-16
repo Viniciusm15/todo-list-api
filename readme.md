@@ -306,7 +306,7 @@ Todos os erros seguem o mesmo formato:
 | 401 | Não autenticado ou token inválido/expirado |
 | 404 | Recurso não encontrado (ou não pertence ao usuário) |
 | 409 | Conflito (ex: email já cadastrado) |
-
+| 500 | Erro interno do servidor |
 ---
 
 ## 🔒 Regras de autorização
